@@ -1,0 +1,146 @@
+---
+title: "TP Tema 1"
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+# Consigna de trabajo
+
+Trabajaremos con el archivo base.xlsx que fue extraído del siguiente portal
+
+```{r fig1, echo = F, fig.cap = " "}
+if (!file.exists('rproject_webpage.png')) {
+  webshot::webshot("https://datasets.datos.mincyt.gob.ar/dataset/personal-de-ciencia-y-tecnologia", 
+                   "./Figuras_tema_1/rproject_webpage.png",
+                   cliprect = c(0, 0, 1000, 500))
+} else {
+  knitr::include_graphics('rproject_webpage.png')
+}
+```
+
+1. Lea la base de datos base.xlsx en Rstudio y Mencione las variables que contiene
+
+```{r include=FALSE}
+library(readxl)
+base <- read_excel("base.xlsx")
+
+```
+
+
+```{r include=FALSE}
+names(base)
+```
+
+2. ¿Hay datos faltantes en el archivo? ¿Qué función utilizaría para verificarlo rápidamente?
+
+```{r include=FALSE}
+summary(base)
+```
+
+El paquete `dplyr` de `R` tiene funciones que permiten hacer sumarizaciones de forma muy rápida y sencilla. (ver https://dplyr.tidyverse.org/reference/summarise.html)
+
+Por ejemplo si leímos la base de datos anterior creando un objeto llamado `base`, podría obtener de forma sencilla el promedio, el desvío de edad según la variable sexo, así como el $n$ de cada categoría.
+
+```{r}
+library(dplyr)
+
+Resumen<-base%>%
+ group_by(sexo)%>%
+  summarise(Media_edad=round(mean(edad, na.rm = T),2), 
+               Desvio_edad=round(sd(edad, na.rm = T),2),
+               n=length(edad))
+
+Resumen
+```
+
+3. Obtenga una tabla resumen utilizando el paquete `dplyr`, explorelo y obtenga la media y el desvío de la edad según la variable gran_area_descripcion
+
+
+```{r include=FALSE}
+library(dplyr)
+
+Resumen<-base%>%
+ group_by(gran_area_descripcion)%>%
+  summarise(Media_edad=round(mean(edad, na.rm = T),2), 
+               Desvio_edad=round(sd(edad, na.rm = T),2),
+               n=length(edad))
+
+Resumen
+
+```
+
+4. Obtenga una tabla resumen para la variable edad, pero solo para el nivel de la variable gran_area_descripcion: HUMANIDADES
+
+
+```{r include=FALSE}
+library(dplyr)
+unique(base$gran_area_descripcion)
+humanidades<-base%>%filter(gran_area_descripcion == "HUMANIDADES")
+
+Resumen_humanidades<-humanidades%>%
+   summarise(Media_edad=round(mean(edad, na.rm = T),2), 
+               Desvio_edad=round(sd(edad, na.rm = T),2),
+               n=length(edad))
+Resumen_humanidades
+
+```
+
+5. ¿Qué comandos utilizaría si quisiera exportar la tabla resumen obtenida en el punto anterior?
+
+```{r include=FALSE}
+write.csv(Resumen, "resumen.csv")
+```
+
+6. Obtenga un histograma para la variable edad, personalice el título y los nombre de los ejes. ayuda (`?hist`)
+
+```{r include=FALSE}
+hist(base$edad,xlab="Edad", ylab="Frecuencia", main="Histograma")
+```
+
+7. Obtenga un boxplot para la variable edad, personalice el título y los nombre de los ejes. ayuda (`?boxplot`)
+
+
+```{r include=FALSE}
+boxplot(base$edad,xlab="Edad", ylab="Frecuencia", main="Boxplot")
+```
+
+8. Obtenga un histograma para la variable edad solo para el sexo== Masculino, personalice el título y los nombre de los ejes. ayuda (`?hist`)
+
+```{r include=FALSE}
+library(dplyr)
+masc<-filter(base, sexo == "Masculino") 
+hist(masc$edad,xlab="Edad", ylab="Frecuencia", main="Histograma Subconjunto Masculino")
+```
+
+9. Obtenga un boxplot para la variable edad solo para los valores que fueron registrados después de 2013 , personalice el título y los nombre de los ejes. ayuda (`?boxplot`)
+
+
+```{r include=FALSE}
+library(dplyr)
+plus2013<-filter(base, anio>2013) 
+boxplot(plus2013$edad,xlab="Edad", ylab="Frecuencia", main="Boxplot registros despues del 2013")
+```
+
+10. Investigue la función `par(frow)` y coloque los últimos 4 gráficos juntos
+https://bookdown.org/ndphillips/YaRrr/arranging-plots-with-parmfrow-and-layout.html
+
+
+```{r include=FALSE}
+par(mfrow = c(2, 2))
+hist(base$edad,xlab="Edad", ylab="Frecuencia", main="Histograma")
+boxplot(base$edad,xlab="Edad", ylab="Frecuencia", main="Boxplot")
+hist(masc$edad,xlab="Edad", ylab="Frecuencia", main="Histograma Subconjunto Masculino")
+boxplot(plus2013$edad,xlab="Edad", ylab="Frecuencia", main="Boxplot registros despues del 2013")
+par(mfrow = c(1, 1))
+```
