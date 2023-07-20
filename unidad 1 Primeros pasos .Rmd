@@ -15,6 +15,7 @@ output:
 editor_options: 
   markdown: 
     wrap: 72
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -74,21 +75,15 @@ procedimiento para instalar **R** y **RStudio** bajo Windows.
 
 ## ¿Cómo obtener **R**?
 
-Podemos descargar **R** desde la siguiente dirección web
+Podemos descargar **R** para windows directamente desde la siguiente dirección web
 (<https://www.r-project.org/>), entrando a la pagina de R, o de forma
 directa desde este enlace <https://cran.r-project.org/bin/windows/base/>
 
-```{r fig1, echo = F, fig.cap = "Página web del Proyecto **R**"}
-if (!file.exists('./Figuras_tema_1/rproject_webpage.png')) {
-  webshot::webshot("https://www.r-project.org/", 
-                   "./Figuras_tema_1/rproject_webpage.png",
-                   cliprect = c(0, 0, 1000, 1000))
-} else {
-  knitr::include_graphics('./Figuras_tema_1/rproject_webpage.png')
-}
+```{r echo=FALSE}
+  knitr::include_graphics('./Figuras_tema_1/rproject_first.jpg')
 ```
 
-El **CRAN**, del inglés *Comprehensive R Archive Network*, es el
+En caso que trabajemos con otros sistemas operativos debemos seleccionarlo desde un **CRAN**, del inglés *Comprehensive R Archive Network*, que es el
 repositorio donde se encuentran archivadas todas las distribuciones
 **R**, incluyendo sus paquetes (*packages*), para la distintas versiones
 de los sistemas operativos (Windows, Mac OS, Linux). Las actualizaciones
@@ -102,25 +97,15 @@ Una vez elegido el mirror, se debe seleccionar la versión según nuestro
 sistema operativo (Linux, Mac, Windows).
 
 ```{r echo=FALSE, fig.align='center', out.height="100%", out.width="100%", fig.cap="Captura de pantalla de la página web donde se seleccionan los espejos"}
-if (!file.exists('./Figuras_tema_1/rproject_mirrors.png')) {
-    webshot::webshot("https://cran.r-project.org/mirrors.html",
-                     "./Figuras_tema_1/rproject_mirrors.png", 
-                     cliprect = c(0, 0, 1000, 1000))
-} else {
+
   knitr::include_graphics('./Figuras_tema_1/rproject_mirrors.png')
-}
-# knitr::include_graphics('./Figuras_tema_1/figura 1.2.JPG')
+
 ```
 
-```{r echo=FALSE, fig.align='center', out.height="100%", out.width="100%", fig.cap="Captura de pantalla de la página web donde se seleccionan el sistema operativo"}
-if (!file.exists('./Figuras_tema_1/rproject_os.png')) {
-    webshot::webshot("https://cloud.r-project.org/",
-                     "./Figuras_tema_1/rproject_os.png", 
-                     cliprect = c(0, 0, 1000, 1000))
-} else {
-  knitr::include_graphics('./Figuras_tema_1/rproject_os.png')
-}
-# knitr::include_graphics('./Figuras_tema_1/figura 1.2.JPG')
+```{r echo=FALSE, fig.align='center', out.height="100%", out.width="100%", fig.cap="Captura de pantalla de la página web donde se seleccionan el sistema operativo", results='asis'}
+
+  knitr::include_graphics('./Figuras_tema_1/rproject_os.jpg')
+
 ```
 
 En el caso de Windows, la distribución de **R** y sus paquetes se
@@ -617,6 +602,217 @@ R puede leer datos directamente de spss:
 El paquete `foreign` contiene la función `read.spss()`. El paquete
 `haven` y la función `read_spss()`.
 
+# Algunas definiciones
+
+Todas las cosas que manipula `R` se llaman objetos, en general, éstos se
+construyen a partir de objetos más simples que pertenecen a alguna de
+las siguientes cinco clases:
+
+-   `character` (cadenas de caracteres)
+-   `numeric` (números reales)
+-   `integer` (números enteros)
+-   `complex` (números complejos)
+-   `logical` (lógicos o booleanos, que sólo toman los valores TRUE o
+    FALSE)
+
+El objeto más simple es el vector, una de las muchas formas de crearlos
+es a partir de elementos individuales.Para esto se utiliza la función
+`c()`
+
+```{r}
+vector<-c(4,2,-8)
+vector
+```
+
+La función `c()` sirve para concatenar varios elementos del mismo tipo.
+En todos los ejemplos mostrados, la impresión del vector se hace en un
+renglón que comienza con el símbolo '[1]', indicando con ello que el
+primer elemento del renglón corresponde al primer elemento del vector.
+
+Dentro de un vector, sus elementos se pueden identificar mediante un
+índice entero, que en el caso de este lenguaje empieza con el 1. Así,
+por ejemplo:
+
+```{r}
+v <- c(8, 7, -3, 2, 182)
+v[5] # El quinto elemento
+```
+
+También podemos usar los corchetes para seleccionar una secuencia de
+elementos, o elementos particulares. Por ejemplo para un vector de 1000
+números aleatorios, generados con la función `rnorm()`, que genera
+números bajo una distribución normal(más adelante describiremos en
+detalle está función):
+
+```{r}
+v <- rnorm(1000)
+head(v)
+plot(v)
+```
+
+Si queremos seleccionar sólo los números en las posiciones de la 5 a la
+15:
+
+```{r}
+(subv <- v[5:15])
+plot(subv, col="red")
+```
+
+Para seleccionar los elementos, 2, 3, y del 5 al 8, tanto en el vector
+se puede hacer de la siguiente manera
+
+```{r}
+(sub1.v <- v[c(2, 3, 5:8)])
+plot(sub1.v)
+```
+
+Los índices negativos, tienen el significado de excluir los elementos
+señalados por ejemplo el complemento de los subconjuntos anteriores se
+puede obtener así:
+
+```{r}
+sub2.v <- v[-c(2, 3, 5:8)]
+plot(sub2.v)
+```
+
+Como se mencionó en unidades anteriores un `data.frame` es un objeto con
+apariencia de una tabla y una forma de crearlos es mediante la función
+`data.frame()`. Para tener acceso a un elemento individual de un
+`data.frame`, se utiliza el operador [,],el primer valor corresponde a
+la fila y el segundo a la columna. Usaremos como ejemplo los datos
+`trees` que vienen en `R`, para saber más acerca de estos datos tipee:
+`?trees`
+
+```{r}
+datos<-trees
+#?trees
+summary(trees)
+
+print("las primeras 10 filas")
+datos[1:10, ] # Selecciono las  primeras 10 filas
+
+print("la primer columna")
+datos[,1] # Selecciono la primer columna
+
+print("el valor de la primer fila en la primer columna")
+datos[1,1] # Selecciono el valor de la primer fila de la primer columna
+```
+
+Otro tipo de objeto es la clase `list` (lista), Esta es una clase de
+datos que puede contener varios elementos, cada uno de los cuales puede
+ser de una clase distinta.
+
+```{r echo=FALSE, fig.align='center', fig.height=3, fig.width=3, out.width="70%"}
+knitr::include_graphics("Figuras_tema_1/lista.jpg")
+```
+
+Por ejemplo, se puede concebir una lista para representar una familia:
+la mamá,el papá, los años de casados, los hijos, y las edades de los
+hijos, de la manera siguiente:
+
+```{r}
+familia <- list("Maria", "Juan", 10, c("Petra", "Hugo" ), c(8,6))
+familia
+```
+
+La lista familia contiene cinco elementos; los tres primeros son a su
+vez de un sólo elemento: el nombre de la mamá, el nombre del papá, y los
+años de casados. Los siguientes dos, son dos vectores de dos elementos
+cada uno: los hijos y sus respectivas edades.
+
+Para acceder a los elementos de una lista podemos utilizar el siguiente
+operador `[[]]`,este no entrega ni una matriz, ni un `data.frame`, sino
+un vector entero de un solo elemento, además este operador no admite ni
+rangos, ni conjuntos de índices; esto es, el operador sólo admite un
+índice entero o una cadena de caracteres que identifica el nombre de
+algún elemento de la estructura sobre la que opera.
+
+```         
+# Primer elemento de la lista
+mi_lista[1]
+
+# Primer elemento de la lista, simplificando la salida
+mi_lista[[1]]
+
+# Primer elemento del primer elemento de la lista.
+mi_lista[[1]][1]
+unlist(mi_lista[1])[1] # Equivalente
+
+# Primera columna del tercer elemento
+mi_lista[[3]][, 1]
+
+# Segundo elemento de la primera columna
+# del tercer elemento de la lista
+mi_lista[[3]][, 1][2]
+mi_lista[[3]][2, 1] # Equivalente
+```
+
+```{r}
+familia[[1]]
+```
+
+La lista puede estar indexada por nombres. Para el ejemplo anterior,
+
+```{r}
+familia <- list('Madre' = "Maria", 'Padre' = "Juan", 'Años casados' = 10, 'Hijos' = c("Hugo", "Petra"), 'Edad hijos' = c(8,6))
+familia
+```
+
+Notar que en general es indistinto el uso de comillas simples o dobles.
+
+Recuerde que para crear nuevas variables y asignarlas a un objeto usamos
+el operador de asignación \<-
+
+```{r}
+mi.iris <- iris[1:10,]
+```
+
+Las variables y objetos existentes en la memoria de `R` se pueden
+listar, borrar, con los siguientes comandos:
+
+```{r}
+ls() #lista los objetos
+rm(mi.iris) #remueve el objeto iris
+ls()
+```
+
+Muchas veces resulta necesario conocer el tipo de las variables ya que
+determinadas funciones operan de manera distinta (¡o fallan!)
+dependiendo del tipo de la variable subyacente. Por lo cual se debe
+comprobar que los datos con los que trabajamos son del tipo adecuado.
+
+Con el siguiente código podemos ver con que tipo de variables trabajamos
+
+```{r}
+mi.iris <- iris[1:10,]
+class(mi.iris)
+```
+
+```{r}
+is.data.frame(mi.iris)
+```
+
+```{r}
+x <- 1:10
+is.vector(x)
+```
+
+```{r}
+class(x)
+```
+
+```{r}
+typeof(x)
+```
+
+En el caso de estructuras de datos complejas como listas o
+`data.frame`,se puede conocer resumidamente el tipo de elementos que los
+componen usando `str()`.
+
+Este tipo de comprobaciones es importante hacerlo siempre después de la
+lectura o la manipulación de datos para ver si se han procesado
+correctamente.
+
 # Estadísticas descriptivas en R
 
 Después de leer los datos y verificar en el resumen que se importaron
@@ -625,6 +821,8 @@ bien estimaremos algunos estadísticos.
 ## Estimación de parámetros
 
 ```{r, message=TRUE, warning=FALSE}
+library(readxl)
+datos <- read_excel("incendios.xlsx") 
 library(fBasics)
 estadisticas_datos <- basicStats(datos[, c(4:7)])
 round(estadisticas_datos, 2)
@@ -666,7 +864,9 @@ Los gráficos disponibles en R son de gran calidad y de una versatilidad
 impresionante. Para hacernos una idea, podemos ejecutar la demo del
 programa mediante:
 
-    demo("graphics")
+```         
+demo("graphics")
+```
 
 Algunos de los gráficos básicos son:
 
@@ -818,62 +1018,54 @@ objeto.
 
 Ejemplos de tipos de objetos en R:
 
-+-----------+-----------+----------------------+-----------+
-| ob je to  | tipo      | Descripción          | ¿S oporta |
-|           |           |                      | varios    |
-|           |           |                      | tipos de  |
-|           |           |                      | datos?    |
-+===========+===========+======================+===========+
-| `v e      | nu        | una variable en el   | No        |
-|   c to r` | mérico,   | significado          |           |
-|           | al fa     | comúnmente asumido   |           |
-|           | bético, c |                      |           |
-|           | omplejo o |                      |           |
-|           | lógico    |                      |           |
-+-----------+-----------+----------------------+-----------+
-| `f a      | factor n  | una variable         | No        |
-|   c to r` | umérico o | categórica.          |           |
-|           | a lf      |                      |           |
-|           | abético   |                      |           |
-+-----------+-----------+----------------------+-----------+
-| a rr eg   | nu        | una tabla de         | No        |
-| lo (      | mérico, a | dimensión k.         |           |
-| `a        | lf        |                      |           |
-|   rr ay`) | abético c |                      |           |
-|           | omplejo o |                      |           |
-|           | lógico    |                      |           |
-+-----------+-----------+----------------------+-----------+
-| ma tr iz  | nu        | un caso particular   | No        |
-| (`ma      | mérico,   | de un arreglo donde  |           |
-|   tr ix`) | al fa     | k = 2.               |           |
-|           | bético, c |                      |           |
-|           | omplejo o |                      |           |
-|           | lógico    |                      |           |
-+-----------+-----------+----------------------+-----------+
-| `d        | nu        | un (marco o base de  | Si        |
-|   at a. f | mérico,   | datos) es una tabla  |           |
-|   r am e` | al fa     | compuesta de uno o   |           |
-|           | bético, c | más vectores y/o     |           |
-|           | omplejo o | factores de la misma |           |
-|           | lógico    | longitud pero que    |           |
-|           |           | pueden ser de        |           |
-|           |           | diferentes tipos     |           |
-+-----------+-----------+----------------------+-----------+
-| `t s`     | nu        | una serie temporal y | Si        |
-|           | mérico,   | como tal contiene    |           |
-|           | al fa     | atributos            |           |
-|           | bético, c | adicionales tales    |           |
-|           | omplejo o | como frecuencia y    |           |
-|           | lógico    | fechas               |           |
-+-----------+-----------+----------------------+-----------+
-| l is ta   | nu        | puede contener       | Si        |
-| (`l       | mérico, a | cualquier tipo de    |           |
-|   i st )` | lf        | objeto incluyendo    |           |
-|           | abético   | otras listas!        |           |
-|           | co        |                      |           |
-|           | mplejo,   |                      |           |
-|           | lógico    |                      |           |
-+-----------+-----------+----------------------+-----------+
++------------+------------+----------------------------+------------+
+| ob je to   | tipo       | Descripción                | ¿S oporta  |
+|            |            |                            | varios     |
+|            |            |                            | tipos de   |
+|            |            |                            | datos?     |
++============+============+============================+============+
+| `v e       | nu mérico, | una variable en el         | No         |
+|    c to r` | al fa      | significado comúnmente     |            |
+|            | bético, c  | asumido                    |            |
+|            | omplejo o  |                            |            |
+|            | lógico     |                            |            |
++------------+------------+----------------------------+------------+
+| `f a       | factor n   | una variable categórica.   | No         |
+|    c to r` | umérico o  |                            |            |
+|            | a lf       |                            |            |
+|            | abético    |                            |            |
++------------+------------+----------------------------+------------+
+| a rr eg lo | nu mérico, | una tabla de dimensión k.  | No         |
+| (          | a lf       |                            |            |
+| `a         | abético c  |                            |            |
+|    rr ay`) | omplejo o  |                            |            |
+|            | lógico     |                            |            |
++------------+------------+----------------------------+------------+
+| ma tr iz   | nu mérico, | un caso particular de un   | No         |
+| (`ma       | al fa      | arreglo donde k = 2.       |            |
+|    tr ix`) | bético, c  |                            |            |
+|            | omplejo o  |                            |            |
+|            | lógico     |                            |            |
++------------+------------+----------------------------+------------+
+| `          | nu mérico, | un (marco o base de datos) | Si         |
+| d  at a. f | al fa      | es una tabla compuesta de  |            |
+|    r am e` | bético, c  | uno o más vectores y/o     |            |
+|            | omplejo o  | factores de la misma       |            |
+|            | lógico     | longitud pero que pueden   |            |
+|            |            | ser de diferentes tipos    |            |
++------------+------------+----------------------------+------------+
+| `t s`      | nu mérico, | una serie temporal y como  | Si         |
+|            | al fa      | tal contiene atributos     |            |
+|            | bético, c  | adicionales tales como     |            |
+|            | omplejo o  | frecuencia y fechas        |            |
+|            | lógico     |                            |            |
++------------+------------+----------------------------+------------+
+| l is ta    | nu mérico, | puede contener cualquier   | Si         |
+| (`l        | a lf       | tipo de objeto incluyendo  |            |
+|    i st )` | abético co | otras listas!              |            |
+|            | mplejo,    |                            |            |
+|            | lógico     |                            |            |
++------------+------------+----------------------------+------------+
 
 **Vectores y matrices**
 
@@ -979,36 +1171,36 @@ datos
 En R se encuentran definidas todas las funciones matemáticas. En la
 siguiente tabla podemos ver algunos ejemplos.
 
-+----------------+--------------------------------------------------+
-| Comando        | operación                                        |
-+================+==================================================+
-| `log(x)`       | logaritmo de base natural (e) de x               |
-+----------------+--------------------------------------------------+
-| `exp(x)`       | antilogaritmo de x de base e                     |
-+----------------+--------------------------------------------------+
-| `log(x,n)`     | logaritmo de base n de x                         |
-+----------------+--------------------------------------------------+
-| `log10(x)`     | logaritmo de base 10 de x                        |
-+----------------+--------------------------------------------------+
-| `sqrt(x)`      | raíz cuadrada de x                               |
-+----------------+--------------------------------------------------+
-| `factorial(x)` | igual a x!                                       |
-+----------------+--------------------------------------------------+
-| `round         | redondea el valor de x a un entero               |
-| (x, digits=0)` |                                                  |
-+----------------+--------------------------------------------------+
-| `signif        | igual a x con 6 dígitos en notaciones científica |
-| (x, digits=6)` |                                                  |
-+----------------+--------------------------------------------------+
-| `runif(n)`     | genera n números aleatorios entre 0 y 1 para una |
-|                | distribución uniforme                            |
-+----------------+--------------------------------------------------+
-| `cos(x)`       | coseno de x                                      |
-+----------------+--------------------------------------------------+
-| `sin(x)`       | seno de x                                        |
-+----------------+--------------------------------------------------+
-| `abs(x)`       | valor absoluto de x                              |
-+----------------+--------------------------------------------------+
++----------------+---------------------------------------------------+
+| Comando        | operación                                         |
++================+===================================================+
+| `log(x)`       | logaritmo de base natural (e) de x                |
++----------------+---------------------------------------------------+
+| `exp(x)`       | antilogaritmo de x de base e                      |
++----------------+---------------------------------------------------+
+| `log(x,n)`     | logaritmo de base n de x                          |
++----------------+---------------------------------------------------+
+| `log10(x)`     | logaritmo de base 10 de x                         |
++----------------+---------------------------------------------------+
+| `sqrt(x)`      | raíz cuadrada de x                                |
++----------------+---------------------------------------------------+
+| `factorial(x)` | igual a x!                                        |
++----------------+---------------------------------------------------+
+| `round         | redondea el valor de x a un entero                |
+| (x, digits=0)` |                                                   |
++----------------+---------------------------------------------------+
+| `signif        | igual a x con 6 dígitos en notaciones científica  |
+| (x, digits=6)` |                                                   |
++----------------+---------------------------------------------------+
+| `runif(n)`     | genera n números aleatorios entre 0 y 1 para una  |
+|                | distribución uniforme                             |
++----------------+---------------------------------------------------+
+| `cos(x)`       | coseno de x                                       |
++----------------+---------------------------------------------------+
+| `sin(x)`       | seno de x                                         |
++----------------+---------------------------------------------------+
+| `abs(x)`       | valor absoluto de x                               |
++----------------+---------------------------------------------------+
 
 Algo importante a tener en cuenta en R es que los datos faltantes se
 expresan como `NA` por defecto (puede modificarse de ser necesario). Las
@@ -1065,141 +1257,137 @@ En la siguiente tabla se describen los gráficos más comunes y sencillos
 para utilizar alguno de ellos hay que instalar la librería
 `library(lattice)`.
 
-+--------------+---------------------------------------------------+
-| C o m a n d  | operación                                         |
-| o            |                                                   |
-+==============+===================================================+
-| \` a d d     | si es TRUE superpone el gráfico en el ya          |
-|              | existente (si existe)                             |
-| = F A L S E  |                                                   |
-| \`           |                                                   |
-+--------------+---------------------------------------------------+
-| \` a x e     | si es FALSE no dibuja los ejes ni la caja del     |
-|              | gráfico                                           |
-| # s          |                                                   |
-|              |                                                   |
-| T R U E \`   |                                                   |
-+--------------+---------------------------------------------------+
-| \` t y       | Especifica el tipo de gráfico; "p": puntos, "l":  |
-|              | líneas, "b": puntos conectados por líneas, .o":   |
-| p e = " p "  | igual al anterior, pero las líneas están sobre    |
-| \`           | los puntos, "h": líneas verticales, "s":          |
-|              | escaleras, los datos se representan como la parte |
-|              | superior de las líneas verticales, "S": igual al  |
-|              | anterior pero los datos se representan como la    |
-|              | parte inferior de las líneas verticales.          |
-+--------------+---------------------------------------------------+
-| \` x l i m = | especifica los límites inferiores y superiores de |
-| ,            | los ejes; por ejemplo con `xlim=c(1, 10)` o       |
-|              | `xlim=range(x)`,`xlab=`, `ylab=` títulos en los   |
-| y l i m = \` | ejes; deben ser variables de tipo carácter        |
-+--------------+---------------------------------------------------+
-| `            | título principal; debe ser de tipo carácter       |
-| m  a  i n =` |                                                   |
-+--------------+---------------------------------------------------+
-| `s  u b =`   | sub-título (escrito en una letra más pequeña)     |
-+--------------+---------------------------------------------------+
++----------------+--------------------------------------------------+
+| C o m a n d o  | operación                                        |
++================+==================================================+
+| \` a d d       | si es TRUE superpone el gráfico en el ya         |
+|                | existente (si existe)                            |
+| = F A L S E \` |                                                  |
++----------------+--------------------------------------------------+
+| \` a x e       | si es FALSE no dibuja los ejes ni la caja del    |
+|                | gráfico                                          |
+| # s            |                                                  |
+|                |                                                  |
+| T R U E \`     |                                                  |
++----------------+--------------------------------------------------+
+| \` t y         | Especifica el tipo de gráfico; "p": puntos, "l": |
+|                | líneas, "b": puntos conectados por líneas, .o":  |
+| p e = " p " \` | igual al anterior, pero las líneas están sobre   |
+|                | los puntos, "h": líneas verticales, "s":         |
+|                | escaleras, los datos se representan como la      |
+|                | parte superior de las líneas verticales, "S":    |
+|                | igual al anterior pero los datos se representan  |
+|                | como la parte inferior de las líneas verticales. |
++----------------+--------------------------------------------------+
+| \` x l i m = , | especifica los límites inferiores y superiores   |
+|                | de los ejes; por ejemplo con `xlim=c(1, 10)` o   |
+| y l i m = \`   | `xlim=range(x)`,`xlab=`, `ylab=` títulos en los  |
+|                | ejes; deben ser variables de tipo carácter       |
++----------------+--------------------------------------------------+
+| `m  a  i n =`  | título principal; debe ser de tipo carácter      |
++----------------+--------------------------------------------------+
+| `s  u b =`     | sub-título (escrito en una letra más pequeña)    |
++----------------+--------------------------------------------------+
 
 Las opciones y argumentos para cada una de estas opciones se pueden
 encontrar en la ayuda incorporada en R. Algunas de estas opciones son
 idénticas para varias funciones gráficas; éstas son las principales (con
 sus valores por defecto):
 
-+--------------+---------------------------------------------------+
-| C o m a n d  | operación                                         |
-| o            |                                                   |
-+==============+===================================================+
-| `a d d =     | si es TRUE superpone el gráfico en el ya          |
-| F  A  L S E` | existente (si existe)                             |
-+--------------+---------------------------------------------------+
-| `a x e s     | si es FALSE no dibuja los ejes ni la caja del     |
-| =  T  R U E` | gráfico                                           |
-+--------------+---------------------------------------------------+
-| `t y p       | Especifica el tipo de gráfico; "p": puntos, "l":  |
-| e  =  " p "` | líneas, "b": puntos conectados por líneas, .o":   |
-|              | igual al anterior, pero las l´ıneas están sobre   |
-|              | los puntos, "h": líneas verticales, "s":          |
-|              | escaleras, los datos se representan como la parte |
-|              | superior de las líneas verticales, "S": igual al  |
-|              | anterior pero los datos se representan como la    |
-|              | parte inferior de las líneas verticales.          |
-+--------------+---------------------------------------------------+
++-------------+-------------------------------------------------------+
+| C o m a n d | operación                                             |
+| o           |                                                       |
++=============+=======================================================+
+| `a d d = F  | si es TRUE superpone el gráfico en el ya existente    |
+|  A   L S E` | (si existe)                                           |
++-------------+-------------------------------------------------------+
+| `a x e s =  | si es FALSE no dibuja los ejes ni la caja del gráfico |
+|  T   R U E` |                                                       |
++-------------+-------------------------------------------------------+
+| `t y p e    | Especifica el tipo de gráfico; "p": puntos, "l":      |
+|  =   " p "` | líneas, "b": puntos conectados por líneas, .o": igual |
+|             | al anterior, pero las l´ıneas están sobre los puntos, |
+|             | "h": líneas verticales, "s": escaleras, los datos se  |
+|             | representan como la parte superior de las líneas      |
+|             | verticales, "S": igual al anterior pero los datos se  |
+|             | representan como la parte inferior de las líneas      |
+|             | verticales.                                           |
++-------------+-------------------------------------------------------+
 
 R posee un conjunto de funciones gráficas que afectan una gráfica ya
 existente, estos son los principales:
 
-+---------------+-------------------------------------------------+
-| Comando       | operación                                       |
-+===============+=================================================+
-| `p oint       | agrega puntos (se puede usar la opción type=)   |
-|   s (x,   y)` |                                                 |
-+---------------+-------------------------------------------------+
-| `line         | igual a la anterior pero con líneas             |
-|   s (x,   y)` |                                                 |
-+---------------+-------------------------------------------------+
-| `text(        | agrega texto dado por labels en las coordenadas |
-|   x,  y,  lab | (x,y); un uso típico: plot(x, y,type="n");      |
-|   e ls, ...)` |                                                 |
-+---------------+-------------------------------------------------+
-| `t ext        | agrega texto dado por text en el margen         |
-|   (x, y,   na | especificado por side (ver axis() más abajo);   |
-|   mes)   mtex | line especifica la línea del área de graficado  |
-|    t( text, s | segments (x0,y0, x1, y1)dibuja una línea desde  |
-|   id e=3 , li | el punto (x0,y0) hasta el punto (x1,y1)         |
-|   n e=0,...)` |                                                 |
-+---------------+-------------------------------------------------+
-| `ar  row      | igual al anterior pero con flechas desde        |
-|  s (x0,    y0 | (x0,y0) si code=2, al punto (x1,y1) si code=1,  |
-|  ,   x 1, y1, | o en ambos si code=3; angle controla el ángulo  |
-|   an gle = 30 | desde la base de la flecha hasta la punta de la |
-|   ,  code=2)` | misma                                           |
-+---------------+-------------------------------------------------+
-| `ab           | dibuja una línea con pendiente b e intercepto a |
-|   l ine(a,b)` |                                                 |
-+---------------+-------------------------------------------------+
-| `ab           | dibuja una línea horizontal en la ordenada y    |
-|   l ine(h=y)` |                                                 |
-+---------------+-------------------------------------------------+
-| `ab           | dibuja una línea vertical en la abcisa x        |
-|   l ine(v=x)` |                                                 |
-+---------------+-------------------------------------------------+
-| `a blin       | dibuja la línea de regresión dada por lm.obj    |
-|   e (lm.obj)` |                                                 |
-+---------------+-------------------------------------------------+
-| `rec          | dibuja un rectángulo donde las esquinas         |
-|   t( x1,   y1 | izquierda, derecha, superior e inferior están   |
-|   ,  x2, y2)` | dadas por x1, x2, y1, y y2, respectivamente     |
-+---------------+-------------------------------------------------+
-| `po lygo      | dibuja un polígono uniendo los puntos dados por |
-|   n (x,   y)` | x y y                                           |
-+---------------+-------------------------------------------------+
-| `lege         | agrega la leyenda en el punto (x,y) con         |
-|   nd (x,    y | símbolos dados por legend                       |
-|   ,  legend)` |                                                 |
-+---------------+-------------------------------------------------+
-| `title()`     | agrega un título y opcionalmente un sub-titulo  |
-+---------------+-------------------------------------------------+
-| `ax is( side  | agrega un eje en la parte inferior (side=1),    |
-|   ,    vect)` | izquierda (2), superior (3), o derecha (4);     |
-|               | vect (opcional) da la abscisa (u ordenada)      |
-|               | donde se deben dibujar los marcadores('tick     |
-|               | marks') del eje                                 |
-+---------------+-------------------------------------------------+
-| `rug(x)`      | dibuja los datos x en el eje x como pequeñas    |
-|               | líneas verticales                               |
-+---------------+-------------------------------------------------+
-| `lo cator(    | con el ratón; también dibuja símbolos           |
-|   n,   t ype= | (type="p") o líneas (type="l") con respecto a   |
-|   " n", ...)` | parámetros gráficos opcionales (...); por       |
-|               | defecto no se dibuja nada (type="n")            |
-+---------------+-------------------------------------------------+
-| `id enti      | Similar a locator() con la diferencia que       |
-|   f y(x,...)` | imprime en la gráfica el valor de x (u          |
-|               | opcionalmente de una leyenda especificada en la |
-|               | opción labels=) más cercano al punto donde se   |
-|               | hizo click. Útil para identificar puntos en la  |
-|               | gráfica que están asociados con nombres.        |
-+---------------+-------------------------------------------------+
++----------------+----------------------------------------------------+
+| Comando        | operación                                          |
++================+====================================================+
+| `p oint        | agrega puntos (se puede usar la opción type=)      |
+|    s (x,   y)` |                                                    |
++----------------+----------------------------------------------------+
+| `line          | igual a la anterior pero con líneas                |
+|    s (x,   y)` |                                                    |
++----------------+----------------------------------------------------+
+| `text(         | agrega texto dado por labels en las coordenadas    |
+|   x,  y,  lab  | (x,y); un uso típico: plot(x, y,type="n");         |
+|    e ls, ...)` |                                                    |
++----------------+----------------------------------------------------+
+| `t ext    (    | agrega texto dado por text en el margen            |
+| x, y,   na     | especificado por side (ver axis() más abajo); line |
+| mes)   mtex    | especifica la línea del área de graficado segments |
+|   t( text, s   | (x0,y0, x1, y1)dibuja una línea desde el punto     |
+|   id e=3 , li  | (x0,y0) hasta el punto (x1,y1)                     |
+|    n e=0,...)` |                                                    |
++----------------+----------------------------------------------------+
+| `ar  row   s   | igual al anterior pero con flechas desde (x0,y0)   |
+|  (x0,    y0    | si code=2, al punto (x1,y1) si code=1, o en ambos  |
+| ,   x 1, y1,   | si code=3; angle controla el ángulo desde la base  |
+|   an gle = 30  | de la flecha hasta la punta de la misma            |
+|    ,  code=2)` |                                                    |
++----------------+----------------------------------------------------+
+| `ab            | dibuja una línea con pendiente b e intercepto a    |
+|    l ine(a,b)` |                                                    |
++----------------+----------------------------------------------------+
+| `ab            | dibuja una línea horizontal en la ordenada y       |
+|    l ine(h=y)` |                                                    |
++----------------+----------------------------------------------------+
+| `ab            | dibuja una línea vertical en la abcisa x           |
+|    l ine(v=x)` |                                                    |
++----------------+----------------------------------------------------+
+| `a blin        | dibuja la línea de regresión dada por lm.obj       |
+|    e (lm.obj)` |                                                    |
++----------------+----------------------------------------------------+
+| `rec           | dibuja un rectángulo donde las esquinas izquierda, |
+|   t( x1,   y1  | derecha, superior e inferior están dadas por x1,   |
+|    ,  x2, y2)` | x2, y1, y y2, respectivamente                      |
++----------------+----------------------------------------------------+
+| `po lygo       | dibuja un polígono uniendo los puntos dados por x  |
+|    n (x,   y)` | y y                                                |
++----------------+----------------------------------------------------+
+| `lege          | agrega la leyenda en el punto (x,y) con símbolos   |
+|   nd (x,    y  | dados por legend                                   |
+|    ,  legend)` |                                                    |
++----------------+----------------------------------------------------+
+| `title()`      | agrega un título y opcionalmente un sub-titulo     |
++----------------+----------------------------------------------------+
+| `ax is( side   | agrega un eje en la parte inferior (side=1),       |
+|    ,    vect)` | izquierda (2), superior (3), o derecha (4); vect   |
+|                | (opcional) da la abscisa (u ordenada) donde se     |
+|                | deben dibujar los marcadores('tick marks') del eje |
++----------------+----------------------------------------------------+
+| `rug(x)`       | dibuja los datos x en el eje x como pequeñas       |
+|                | líneas verticales                                  |
++----------------+----------------------------------------------------+
+| `lo cator(     | con el ratón; también dibuja símbolos (type="p") o |
+|   n,   t ype=  | líneas (type="l") con respecto a parámetros        |
+|    " n", ...)` | gráficos opcionales (...); por defecto no se       |
+|                | dibuja nada (type="n")                             |
++----------------+----------------------------------------------------+
+| `id enti       | Similar a locator() con la diferencia que imprime  |
+|    f y(x,...)` | en la gráfica el valor de x (u opcionalmente de    |
+|                | una leyenda especificada en la opción labels=) más |
+|                | cercano al punto donde se hizo click. Útil para    |
+|                | identificar puntos en la gráfica que están         |
+|                | asociados con nombres.                             |
++----------------+----------------------------------------------------+
 
 # Bibliografía y enlaces de interés
 
